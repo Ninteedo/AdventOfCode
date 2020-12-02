@@ -1,2 +1,2 @@
 # AdventOfCode
-My solutions for the [Advent of Code 2020 challenge]https://adventofcode.com/2020, written in Haskell.
+My solutions for the [Advent of Code 2020 challenge](https://adventofcode.com/2020), written in Haskell.
