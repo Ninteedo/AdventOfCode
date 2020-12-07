@@ -1,11 +1,10 @@
-import Data.List ( isPrefixOf )
-import Split (split)
+import Data.List (isPrefixOf)
+import Split (split, splitEnd)
 import Data.Char (isDigit)
 
 type BagName = String
-type Bag = (BagName,[BagName])
+type Bag = (BagName,[BagQuant])
 type BagQuant = (BagName,Int)
-type Bag' = (BagName,[BagQuant])
 
 f :: [String] -> Int
 f xss = length (filter (`searchGold` bagList) bagList) - 1
@@ -14,26 +13,20 @@ f xss = length (filter (`searchGold` bagList) bagList) - 1
         bagList = map getBag xss
         searchGold :: Bag -> [Bag] -> Bool
         searchGold (name,others) bagList | name == targetBag = True
-                                         | otherwise = any (\other -> other /= noOtherBag && searchGold (other `findBag` bagList) bagList) others
+                                         | otherwise = any (\(other,_) -> other /= noOtherBag && searchGold (other `findBag` bagList) bagList) others
 
-findBag  :: BagName -> [Bag] -> Bag
-findBag  name []     = error ("Couldn't find bag " ++ name ++ " in bag list.")
-findBag  name (b:bs) | name == fst b = b
-                     | otherwise = findBag name bs
-findBag' :: BagName -> [Bag'] -> Bag'
-findBag' name []     = error ("Couldn't find bag " ++ name ++ " in bag list.")
-findBag' name (b:bs) | name == fst b = b
-                     | otherwise = findBag' name bs
+findBag :: BagName -> [Bag] -> Bag
+findBag name []     = error ("Could not find bag " ++ name ++ " in bag list.")
+findBag name (b:bs) | name == fst b = b
+                    | otherwise = findBag name bs
 
 getBag :: String -> Bag
-getBag xs = (\(name,others) -> (name, map fst others)) (getBagQuant xs)
-getBagQuant :: String -> Bag'
-getBagQuant xs = (getOuterBag xs, getInnerBags xs)
+getBag xs = (getOuterBag xs, getInnerBags xs)
     where
-        getOuterBag :: String -> BagName
-        getOuterBag = concat . head . split "bags" . map normalizeBagStr . words
+        getOuterBag  :: String -> BagName
+        getOuterBag  = concat . head . split ["bags"] . map normalizeBagStr . words
         getInnerBags :: String -> [BagQuant]
-        getInnerBags = map splitQuant . tail . map (concat . dropWhile (== "contain")) . split "bags" . map normalizeBagStr . init . words
+        getInnerBags = tail . map (splitQuant . concat . dropWhile (== "contain")) . splitEnd ["bags"] . map normalizeBagStr . words
         normalizeBagStr :: String -> String
         normalizeBagStr xs | "bag" `isPrefixOf` xs = "bags"
                            | otherwise = xs
@@ -47,16 +40,16 @@ noOtherBag :: String
 noOtherBag = "noother"
 
 g :: [String] -> Int
-g xs = countBags (targetBag `findBag'` bagList)
+g xss = countBags (targetBag `findBag` bagList)
     where
-        bagList :: [Bag']
-        bagList = map getBagQuant xs
-        countBags :: Bag' -> Int
+        bagList :: [Bag]
+        bagList = map getBag xss
+        countBags :: Bag -> Int
         countBags (_,others) = sum $ map helper others
             where
                 helper :: BagQuant -> Int
-                helper (name,quant) | quant == 0 = 0
-                                    | otherwise = quant + quant * countBags (name `findBag'` bagList)
+                helper (_,0) = 0
+                helper (name,quant) = quant * (1 + countBags (name `findBag` bagList))
 
 test1data :: [String]
 test1data = ["light red bags contain 1 bright white bag, 2 muted yellow bags.",
