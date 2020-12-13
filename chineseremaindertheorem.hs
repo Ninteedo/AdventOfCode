@@ -1,3 +1,5 @@
+-- source:: https://rosettacode.org/wiki/Chinese_remainder_theorem#Haskell
+
 module ChineseRemainderTheorem (chineseRemainder) where
 
 import Control.Monad (zipWithM)
