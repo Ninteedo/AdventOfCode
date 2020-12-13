@@ -11,7 +11,7 @@ g xs = head [ xs!!i * xs!!j * xs!!k |
               xs!!i + xs!!j + xs!!k == 2020 ]
 
 main = do
-    contents <- readFile "input/1.txt"
+    contents <- readFile "input/01.txt"
     let ss = lines contents
         xs :: [Int]
         xs = map read ss

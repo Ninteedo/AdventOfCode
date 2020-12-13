@@ -47,7 +47,7 @@ extraValidPassports sss = filter moreValid (validPassports sss)
         eyeColours = ["amb","blu","brn","gry","grn","hzl","oth"]
     
 main = do
-    contents <- readFile "input/4.txt"
+    contents <- readFile "input/04.txt"
     let ss = lines contents
     print ("#1: " ++ show (f ss))
     print ("#2: " ++ show (g ss))

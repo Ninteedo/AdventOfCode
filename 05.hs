@@ -36,7 +36,7 @@ g = pruneNotReal . findMissing . map findSeat
                 invalid ((row1,col1),(row2,col2)) = (row1 <= row2 + 1 && row1 + 1 >= row2) || (row2 <= row1 + 1 && row2 + 1 >= row1)
 
 main = do
-    contents <- readFile "input/5.txt"
+    contents <- readFile "input/05.txt"
     let ss = lines contents
     print ("#1: " ++ show (f ss))
     print ("#2: " ++ show (g ss))

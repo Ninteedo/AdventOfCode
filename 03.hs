@@ -11,7 +11,7 @@ g ss = product $ map (f ss) directions
         directions = [(1,1),(3,1),(5,1),(7,1),(1,2)]
 
 main = do
-    contents <- readFile "input/3.txt"
+    contents <- readFile "input/03.txt"
     let ss = lines contents
         fDirection = (3,1)
     print ("#1: " ++ show (f ss fDirection))

@@ -25,7 +25,7 @@ findSum target (x:xs) | x + sum (strictFind (target-x) xs) == target = x : stric
                                  | otherwise = []
 
 main = do
-    contents <- readFile "input/9.txt"
+    contents <- readFile "input/09.txt"
     let ss = lines contents
         xs = map read ss :: [Int]
     print ("#1: " ++ show (f xs))
