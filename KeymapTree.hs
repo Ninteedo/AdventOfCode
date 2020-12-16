@@ -6,7 +6,8 @@ module KeymapTree ( Keymap,
                     select,
                     toList, fromList,
                     merge, filterLT, filterGT,
-                    prop_set_get, prop_toList_fromList
+                    prop_set_get, prop_toList_fromList,
+                    rebalance
                   )
 
 where
@@ -143,6 +144,13 @@ prop_select km = all (\func -> select func km `equal`
         g = even
         h = (< 10)
         i = (> 10)
+
+rebalance :: Ord k => Keymap k a -> Keymap k a
+rebalance (Node k v (Node k' v' l' r') r) | depth l' >= depth r' && depth l' > depth r = Node k' v' l' (Node k v r' r)
+rebalance (Node k v l (Node k' v' l' r')) | depth r' >= depth l' && depth r' > depth l = Node k' v' (Node k v l' l) r'
+rebalance (Node k v (Node k' v' a (Node k'' v'' b c)) d) | depth (Node k'' v'' b c) > depth d = Node k'' v'' (Node k' v' a b) (Node k v c d)
+rebalance (Node k v a (Node k' v' (Node k'' v'' b c) d)) | depth (Node k'' v'' b c) > depth a = Node k'' v'' (Node k v a b) (Node k' v' c d)
+rebalance a = a
 
 -- Instances for QuickCheck -----------------------------
 instance (Ord k, Show k, Show a) => Show (Keymap k a) where
